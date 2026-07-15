@@ -218,9 +218,7 @@ setCampo("CAMNOMEPARCEIRO",nomeparceiro);</bpmnsnk:script></bpmnsnk:eventExtensi
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_03mm7r4" sourceRef="UserTask_0pmkbq1" targetRef="UserTask_126jqh5" />
     <bpmn:serviceTask id="UserTask_126jqh5" name="Buscar Informações da Compensação" implementation="##WebService">
-      <bpmn:incoming>SequenceFlow_03mm7r4</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1xfyada</bpmn:outgoing>
-    <bpmn:extensionElements><bpmnsnk:eventTaskExtension><bpmnsnk:eventExtensionAttribute onde="E"><bpmnsnk:script>var camIdFinanceiro = getCampo("CAMIDFINANCEIRO");
+      <bpmn:extensionElements><bpmnsnk:eventTaskExtension><bpmnsnk:eventExtensionAttribute onde="E"><bpmnsnk:script>var camIdFinanceiro = getCampo("CAMIDFINANCEIRO");
 if (camIdFinanceiro !== null &amp;&amp; camIdFinanceiro !== "NULL" &amp;&amp; camIdFinanceiro !== "" &amp;&amp; camIdFinanceiro !== undefined){
     var financeiro = buscarDados("RECDESP, VLRDESDOB","TGFFIN","NUFIN =:NUFIN",[camIdFinanceiro]);
     if (financeiro) {
@@ -238,7 +236,9 @@ if (camIdFinanceiro !== null &amp;&amp; camIdFinanceiro !== "NULL" &amp;&amp; ca
         setCampo("CAMTIPOFINAN", tipoFinan);
         setCampo("CAMVALORDESD", camValorDesd);
     }
-}</bpmnsnk:script></bpmnsnk:eventExtensionAttribute></bpmnsnk:eventTaskExtension></bpmn:extensionElements></bpmn:serviceTask>
+}</bpmnsnk:script></bpmnsnk:eventExtensionAttribute></bpmnsnk:eventTaskExtension></bpmn:extensionElements><bpmn:incoming>SequenceFlow_03mm7r4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1xfyada</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_1xfyada" sourceRef="UserTask_126jqh5" targetRef="UserTask_0jr01xf" />
     <bpmn:serviceTask id="UserTask_0jr01xf" name="E-mail ao solicitante (Registro Compensação)" implementation="##WebService" bpmnsnk:typeImplementation="Email">
       <bpmn:extensionElements />
