@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpmnsnk="http://sankhya.com.br/schema/bpmn/bpmnSnkModeler" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="definitions_1" targetNamespace="br.com.sankhya.workflow" typeLanguage="http://www.w3.org/1999/XPath">
+  <bpmn:collaboration id="collaboration_1" isClosed="false">
+    <bpmn:participant id="participant_1" name="APROVADO ?" processRef="processo_1" />
+  </bpmn:collaboration>
+  <bpmn:process id="processo_1" name="APROVADO ?" processType="None" isClosed="false" isExecutable="false">
+    <bpmn:extensionElements>
+      <bpmnsnk:variableExtension>
+        <bpmnsnk:variableExtensionAttribute typeExtension="variableProcess" name="CAMPROCESSO_03V" scope="P">
+          <bpmnsnk:property name="nomeAba" value="__main" />
+          <bpmnsnk:property name="initialization" value="S" />
+        </bpmnsnk:variableExtensionAttribute>
+      </bpmnsnk:variableExtension>
+    </bpmn:extensionElements>
+    <bpmn:laneSet id="LaneSet_0nazikf">
+      <bpmn:lane id="Lane_06iyuoa" name="Solicitante">
+        <bpmn:extensionElements />
+        <bpmn:flowNodeRef>startEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_1r17f9x</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_145m6aa</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_0955st5</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1j7c0rc" name="Gerente">
+        <bpmn:extensionElements />
+        <bpmn:flowNodeRef>UserTask_0xurl29</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_1azpvoj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_1cr8349</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_0rql2fg</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0w20aub" name="Financeiro">
+        <bpmn:extensionElements />
+        <bpmn:flowNodeRef>UserTask_0izyhrj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_012euzd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_09vasu1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_10bxo7h</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_0pmkbq1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_126jqh5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_0jr01xf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_1xjw2xz</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="startEvent_1">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>SequenceFlow_0jkijxo</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0jkijxo" sourceRef="startEvent_1" targetRef="UserTask_1r17f9x" />
+    <bpmn:serviceTask id="UserTask_1r17f9x" implementation="##WebService">
+      <bpmn:extensionElements><bpmnsnk:eventTaskExtension><bpmnsnk:eventExtensionAttribute onde="E"><bpmnsnk:script>var codinstprn = getIdInstanceProcesso();
+var codusuinc = buscarDado("CODUSUINC","TWFIPRN","IDINSTPRN = :IDINSTPRN", [codinstprn]);
+var emailsolicitante = buscarDado("EMAIL","TSIUSU","CODUSU = :CODUSU", [codusuinc]);
+setCampo("CAMEMAILSOLICITANTE", emailsolicitante);</bpmnsnk:script></bpmnsnk:eventExtensionAttribute></bpmnsnk:eventTaskExtension></bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0jkijxo</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1b3mq2w</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UserTask_0xurl29" name="Aprovação da Gerencia" implementation="##unspecified">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_1b3mq2w</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0gmaskn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1cr8349" name="Aprovado?">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_0gmaskn</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1fvu321</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0zmwaad</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0gmaskn" sourceRef="UserTask_0xurl29" targetRef="ExclusiveGateway_1cr8349" />
+    <bpmn:sequenceFlow id="SequenceFlow_1fvu321" sourceRef="ExclusiveGateway_1cr8349" targetRef="UserTask_1azpvoj"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${CAMAPROVACAO == 'N'}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:serviceTask id="UserTask_1azpvoj" name="Pedido Reprovado" implementation="##WebService" bpmnsnk:typeImplementation="Email">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_1fvu321</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0zdf9qs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0zmwaad" sourceRef="ExclusiveGateway_1cr8349" targetRef="UserTask_0izyhrj"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${CAMAPROVACAO == 'S'}</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:userTask id="UserTask_0izyhrj" name="Cadastro dos dados para Pagamento" implementation="##unspecified">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_0zmwaad</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05kkngf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_05kkngf" sourceRef="UserTask_0izyhrj" targetRef="UserTask_012euzd" />
+    <bpmn:serviceTask id="UserTask_012euzd" name="Registro Movimentação Financeira'" implementation="##WebService">
+      <bpmn:extensionElements><bpmnsnk:eventTaskExtension><bpmnsnk:eventExtensionAttribute onde="E"><bpmnsnk:script>var codinstprn = getIdInstanceProcesso();
+var codusuinc = buscarDado("CODUSUINC","TWFIPRN","IDINSTPRN = :IDINSTPRN", [codinstprn]);
+var camContaEmpresa = getCampo("CAMCONTAEMPRESA");
+var Banco = buscarDado("CODBCO","TSICTA","CODCTABCOINT = :CODCTABCOINT", [camContaEmpresa]);
+var usuario = buscarDados("CODPARC, CODCENCUSPAD, CODEMP","TSIUSU","CODUSU = :CODUSU",[codusuinc]);
+var parceiroSolicitante = usuario.CODPARC;
+var CR = usuario.CODCENCUSPAD;
+var CODEMP = usuario.CODEMP;
+var camValorAdiantamento = getCampo("CAMVALORADIANTAMENTO");
+var camObs = getCampo("CAMOBS");
+var camDataNeg = getCampo("CAMDATANEG");
+var camDataVenc = getCampo("CAMDATAVENC");
+var camNatureza = getCampo("CAMNATUREZA");
+var camTipoTitulo = getCampo("CAMTIPOTITULO");
+var HISTORICO = camObs;
+var camTOP = 1604;
+
+var Receita = novaLinha("Financeiro");
+Receita.setCampo("CODPARC",parceiroSolicitante);
+Receita.setCampo("VLRDESDOB",camValorAdiantamento);
+Receita.setCampo("OBSERVACAOAC",camObs);
+Receita.setCampo("CODNAT",camNatureza);
+Receita.setCampo("CODCTABCOINT",camContaEmpresa);
+Receita.setCampo("CODTIPTIT",camTipoTitulo);
+Receita.setCampo("CODTIPOPER",camTOP);
+Receita.setCampo("CODCENCUS",CR);
+Receita.setCampo("CODBCO",Banco);
+Receita.setCampo("DTNEG",camDataNeg);
+Receita.setCampo("DTVENC",camDataVenc);
+Receita.setCampo("HISTORICO",HISTORICO);
+Receita.setCampo("CODEMP",CODEMP);
+Receita.setCampo("RECDESP",1);
+Receita.setCampo("NUMNOTA",1);
+Receita.save();
+
+var Despesa = novaLinha("Financeiro");
+Despesa.setCampo("CODPARC",parceiroSolicitante);
+Despesa.setCampo("VLRDESDOB",camValorAdiantamento);
+Despesa.setCampo("OBSERVACAOAC",camObs);
+Despesa.setCampo("CODNAT",camNatureza);
+Despesa.setCampo("CODCTABCOINT",camContaEmpresa);
+Despesa.setCampo("CODTIPTIT",camTipoTitulo);
+Despesa.setCampo("CODTIPOPER",camTOP);
+Despesa.setCampo("CODCENCUS",CR);
+Despesa.setCampo("CODBCO",Banco);
+Despesa.setCampo("DTNEG",camDataNeg);
+Despesa.setCampo("DTVENC",camDataVenc);
+Despesa.setCampo("HISTORICO",HISTORICO);
+Despesa.setCampo("CODEMP",CODEMP);
+Despesa.setCampo("RECDESP",-1);
+Despesa.setCampo("NUMNOTA",1);
+Despesa.save();</bpmnsnk:script></bpmnsnk:eventExtensionAttribute></bpmnsnk:eventTaskExtension></bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_05kkngf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1q88qh3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1q88qh3" sourceRef="UserTask_012euzd" targetRef="UserTask_09vasu1" />
+    <bpmn:serviceTask id="UserTask_09vasu1" name="E-mail ao solicitante (Aprovação)" implementation="##WebService" bpmnsnk:typeImplementation="Email">
+      <bpmn:incoming>SequenceFlow_1q88qh3</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1q48sho</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UserTask_10bxo7h" name="Confirmar Baixa da Despesa" implementation="##unspecified">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_1q48sho</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1p1kg8t</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1q48sho" sourceRef="UserTask_09vasu1" targetRef="UserTask_10bxo7h" />
+    <bpmn:sequenceFlow id="SequenceFlow_1p1kg8t" sourceRef="UserTask_10bxo7h" targetRef="UserTask_145m6aa" />
+    <bpmn:userTask id="UserTask_145m6aa" name="Lançamento das Despesas Reais" implementation="##unspecified">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_1p1kg8t</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0gjirzc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0gjirzc" sourceRef="UserTask_145m6aa" targetRef="UserTask_0955st5" />
+    <bpmn:serviceTask id="UserTask_0955st5" name="Registro das Despesas" implementation="##WebService">
+      <bpmn:extensionElements><bpmnsnk:eventTaskExtension><bpmnsnk:eventExtensionAttribute onde="E"><bpmnsnk:script>var despesas = getLinhasFormulario("AD_TWFLAND");
+var codinstprn = getIdInstanceProcesso();
+var codusuinc = buscarDado("CODUSUINC","TWFIPRN","IDINSTPRN = :IDINSTPRN", [codinstprn]);
+var camContaEmpresa = getCampo("CAMCONTAEMPRESA");
+var Banco = buscarDado("CODBCO","TSICTA","CODCTABCOINT = :CODCTABCOINT",[camContaEmpresa]);
+var usuario = buscarDados("CODPARC, CODCENCUSPAD, CODEMP","TSIUSU","CODUSU = :CODUSU",[codusuinc]);
+var parceiroSolicitante = usuario.CODPARC;
+var CR = usuario.CODCENCUSPAD;
+var CODEMP = usuario.CODEMP;
+var camNatureza = getCampo("CAMNATUREZA");
+var camTipoTitulo = getCampo("CAMTIPOTITULO");
+var camDataNeg = getCampo("CAMDATANEG");
+var camDataVenc = getCampo("CAMDATAVENC");
+var HISTORICO = getCampo("CAMOBS");
+var nomeparceiro = getCampo("CAMNOMEPARCEIRO");
+var total = parseFloat(0);
+var camTOP = 1604;
+var CAMNUMNOTA = 1;
+
+for (var i=0 ; i &lt; despesas.length ; i ++){
+  total = total + parseFloat(despesas[i].getCampo("CAMVALORDESPESA"));
+}
+
+var Financeiro = novaLinha("Financeiro");
+Financeiro.setCampo("VLRDESDOB",total);
+Financeiro.setCampo("NUMNOTA",CAMNUMNOTA);
+Financeiro.setCampo("CODPARC",parceiroSolicitante);
+Financeiro.setCampo("CODNAT",camNatureza);
+Financeiro.setCampo("CODCTABCOINT",camContaEmpresa);
+Financeiro.setCampo("CODTIPTIT",camTipoTitulo);
+Financeiro.setCampo("CODTIPOPER",camTOP);
+Financeiro.setCampo("CODCENCUS",CR);
+Financeiro.setCampo("CODBCO",Banco);
+Financeiro.setCampo("DTNEG",camDataNeg);
+Financeiro.setCampo("DTVENC",camDataVenc);
+Financeiro.setCampo("HISTORICO",HISTORICO);
+Financeiro.setCampo("CODEMP",CODEMP);
+Financeiro.setCampo("RECDESP",-1);
+Financeiro.save();
+
+var nufim = Financeiro.getCampo("NUFIN");
+
+for (var i=0 ; i &lt; despesas.length ; i ++){
+  var percRateio = parseInt((parseFloat(despesas[i].getCampo("CAMVALORDESPESA")) / total)* 100);
+  var codNat = despesas[i].getCampo("CODNAT");
+  var Rateio = novaLinha("RateioRecDesp");
+  Rateio.setCampo("NUFIN",nufim);
+  Rateio.setCampo("PERCRATEIO",percRateio);
+  Rateio.setCampo("CODNAT",codNat);
+  Rateio.setCampo("ORIGEM","F");
+  Rateio.save();
+}
+
+setCampo("CAMTOTALADIANTAMENTO",total);
+setCampo("CAMNOMEPARCEIRO",nomeparceiro);</bpmnsnk:script></bpmnsnk:eventExtensionAttribute></bpmnsnk:eventTaskExtension></bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0gjirzc</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05v1v0m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_05v1v0m" sourceRef="UserTask_0955st5" targetRef="UserTask_0pmkbq1" />
+    <bpmn:userTask id="UserTask_0pmkbq1" name="Compensação Financeira" implementation="##unspecified">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_05v1v0m</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_03mm7r4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_03mm7r4" sourceRef="UserTask_0pmkbq1" targetRef="UserTask_126jqh5" />
+    <bpmn:serviceTask id="UserTask_126jqh5" name="Buscar Informações da Compensação" implementation="##WebService">
+      <bpmn:incoming>SequenceFlow_03mm7r4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1xfyada</bpmn:outgoing>
+    <bpmn:extensionElements><bpmnsnk:eventTaskExtension><bpmnsnk:eventExtensionAttribute onde="E"><bpmnsnk:script>var camIdFinanceiro = getCampo("CAMIDFINANCEIRO");
+if (camIdFinanceiro !== null &amp;&amp; camIdFinanceiro !== "NULL" &amp;&amp; camIdFinanceiro !== "" &amp;&amp; camIdFinanceiro !== undefined){
+    var financeiro = buscarDados("RECDESP, VLRDESDOB","TGFFIN","NUFIN =:NUFIN",[camIdFinanceiro]);
+    if (financeiro) {
+        var camRecDesp = financeiro.RECDESP;
+        var camValorDesd = financeiro.VLRDESDOB;
+        var tipoFinan = "";
+        if (camRecDesp == "-1") {
+            tipoFinan = "Valor a ser recebido da empresa";
+        } else if (camRecDesp == "1") {
+            tipoFinan = "Valor a ser devolvido para empresa";
+        } else {
+            tipoFinan = "Valor compensado";
+            camValorDesd = 0;
+        }
+        setCampo("CAMTIPOFINAN", tipoFinan);
+        setCampo("CAMVALORDESD", camValorDesd);
+    }
+}</bpmnsnk:script></bpmnsnk:eventExtensionAttribute></bpmnsnk:eventTaskExtension></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1xfyada" sourceRef="UserTask_126jqh5" targetRef="UserTask_0jr01xf" />
+    <bpmn:serviceTask id="UserTask_0jr01xf" name="E-mail ao solicitante (Registro Compensação)" implementation="##WebService" bpmnsnk:typeImplementation="Email">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_1xfyada</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jj5e7x</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1xjw2xz">
+      <bpmn:incoming>SequenceFlow_0jj5e7x</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0jj5e7x" sourceRef="UserTask_0jr01xf" targetRef="EndEvent_1xjw2xz" />
+    <bpmn:endEvent id="EndEvent_0rql2fg">
+      <bpmn:incoming>SequenceFlow_0zdf9qs</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0zdf9qs" sourceRef="UserTask_1azpvoj" targetRef="EndEvent_0rql2fg" />
+    <bpmn:sequenceFlow id="SequenceFlow_1b3mq2w" sourceRef="UserTask_1r17f9x" targetRef="UserTask_0xurl29" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collaboration_1">
+      <bpmndi:BPMNShape id="participant_1_di" bpmnElement="participant_1">
+        <dc:Bounds x="150" y="100" width="1450" height="388" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="startEvent_1_di" bpmnElement="startEvent_1">
+        <dc:Bounds x="203" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_06iyuoa_di" bpmnElement="Lane_06iyuoa">
+        <dc:Bounds x="180" y="100" width="1420" height="129" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1j7c0rc_di" bpmnElement="Lane_1j7c0rc">
+        <dc:Bounds x="180" y="229" width="1420" height="129" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0w20aub_di" bpmnElement="Lane_0w20aub">
+        <dc:Bounds x="180" y="358" width="1420" height="130" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jkijxo_di" bpmnElement="SequenceFlow_0jkijxo">
+        <di:waypoint x="239" y="170" />
+        <di:waypoint x="289" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1uneysi_di" bpmnElement="UserTask_1r17f9x">
+        <dc:Bounds x="289" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0xurl29_di" bpmnElement="UserTask_0xurl29">
+        <dc:Bounds x="289" y="264" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1cr8349_di" bpmnElement="ExclusiveGateway_1cr8349" isMarkerVisible="true">
+        <dc:Bounds x="439" y="279" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="437" y="255" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gmaskn_di" bpmnElement="SequenceFlow_0gmaskn">
+        <di:waypoint x="389" y="304" />
+        <di:waypoint x="439" y="304" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fvu321_di" bpmnElement="SequenceFlow_1fvu321">
+        <di:waypoint x="489" y="304" />
+        <di:waypoint x="563" y="304" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_12k3kfl_di" bpmnElement="UserTask_1azpvoj">
+        <dc:Bounds x="563" y="264" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0izyhrj_di" bpmnElement="UserTask_0izyhrj">
+        <dc:Bounds x="414" y="374" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0zmwaad_di" bpmnElement="SequenceFlow_0zmwaad">
+        <di:waypoint x="464" y="329" />
+        <di:waypoint x="464" y="374" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_05kkngf_di" bpmnElement="SequenceFlow_05kkngf">
+        <di:waypoint x="514" y="414" />
+        <di:waypoint x="564" y="414" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0fzb8q2_di" bpmnElement="UserTask_012euzd">
+        <dc:Bounds x="564" y="374" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1q88qh3_di" bpmnElement="SequenceFlow_1q88qh3">
+        <di:waypoint x="664" y="414" />
+        <di:waypoint x="714" y="414" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1w3h93s_di" bpmnElement="UserTask_09vasu1">
+        <dc:Bounds x="714" y="374" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_10bxo7h_di" bpmnElement="UserTask_10bxo7h">
+        <dc:Bounds x="864" y="374" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1q48sho_di" bpmnElement="SequenceFlow_1q48sho">
+        <di:waypoint x="814" y="414" />
+        <di:waypoint x="864" y="414" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_145m6aa_di" bpmnElement="UserTask_145m6aa">
+        <dc:Bounds x="864" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1p1kg8t_di" bpmnElement="SequenceFlow_1p1kg8t">
+        <di:waypoint x="914" y="374" />
+        <di:waypoint x="914" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gjirzc_di" bpmnElement="SequenceFlow_0gjirzc">
+        <di:waypoint x="964" y="170" />
+        <di:waypoint x="1014" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1mfphfp_di" bpmnElement="UserTask_0955st5">
+        <dc:Bounds x="1014" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0pmkbq1_di" bpmnElement="UserTask_0pmkbq1">
+        <dc:Bounds x="1014" y="374" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_05v1v0m_di" bpmnElement="SequenceFlow_05v1v0m">
+        <di:waypoint x="1064" y="210" />
+        <di:waypoint x="1064" y="374" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_03mm7r4_di" bpmnElement="SequenceFlow_03mm7r4">
+        <di:waypoint x="1114" y="414" />
+        <di:waypoint x="1164" y="414" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_08osrv2_di" bpmnElement="UserTask_126jqh5">
+        <dc:Bounds x="1164" y="374" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1xfyada_di" bpmnElement="SequenceFlow_1xfyada">
+        <di:waypoint x="1264" y="414" />
+        <di:waypoint x="1314" y="414" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0gnriuh_di" bpmnElement="UserTask_0jr01xf">
+        <dc:Bounds x="1314" y="374" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1xjw2xz_di" bpmnElement="EndEvent_1xjw2xz">
+        <dc:Bounds x="1464" y="396" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jj5e7x_di" bpmnElement="SequenceFlow_0jj5e7x">
+        <di:waypoint x="1414" y="414" />
+        <di:waypoint x="1464" y="414" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0rql2fg_di" bpmnElement="EndEvent_0rql2fg">
+        <dc:Bounds x="737" y="286" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0zdf9qs_di" bpmnElement="SequenceFlow_0zdf9qs">
+        <di:waypoint x="663" y="304" />
+        <di:waypoint x="737" y="304" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1b3mq2w_di" bpmnElement="SequenceFlow_1b3mq2w">
+        <di:waypoint x="339" y="210" />
+        <di:waypoint x="339" y="264" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
